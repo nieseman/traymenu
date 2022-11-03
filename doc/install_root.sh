@@ -1,0 +1,3 @@
+# For now, in place of a better setup method...
+sudo cp -r traymenu /usr/local/lib/python3.10   # use suitable Python version
+sudo ln -s /usr/local/lib/python3.10/traymenu/main.py /usr/local/bin/traymenu
