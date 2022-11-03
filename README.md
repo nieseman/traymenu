@@ -6,7 +6,7 @@ It takes some inspiration from the "alltray" tool
 
 *What does it look like?*
 
-Using the Qt menu:
+Screenshot in Kubuntu, using the Qt menu:
 ```
 CMD_TERM="xterm -geometry 80x30 -hold -bg black -fg green -e"
 traymenu \
@@ -19,26 +19,13 @@ traymenu \
     --item "uptime: $CMD_TERM uptime" \
         --end
 ```
-<screenshot>
-Using the Gtk menu:
-```
-traymenu \
-    gtk --debug \
-    --submenu "Test/sysinfo" \
-        --item "disk free: $CMD_TERM df" \
-        --separator \
-        --item "mount: $CMD_TERM mount" \
-        --end \
-    --item "uptime: $CMD_TERM uptime" \
-        --end
-```
-<screenshot>
-(Both screenshots made in Kubuntu.)
+
+![Screenshot](doc/traymenu_screenshot_qt.png)
 
 *Help!?*
 
 ```
-$ ./tmenu -h
+$ traymenu
 First argument must be 'qt' or 'gtk'
 
 Usage: {sys.argv[0]} qt|gtk [-d|--debug]
