@@ -1,12 +1,10 @@
 #!/bin/bash
 
 CMD_TERM="xterm -geometry 80x30 -hold -bg black -fg green -e"
-traymenu \
-    qt --debug \
+traymenu qt --debug \
     --submenu "Test/sysinfo" \
         --item "disk free: $CMD_TERM df" \
         --separator \
         --item "mount: $CMD_TERM mount" \
-        --end \
-    --item "uptime: $CMD_TERM uptime" \
-        --end
+        --submenu-end \
+    --item "uptime: $CMD_TERM uptime"

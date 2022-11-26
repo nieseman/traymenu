@@ -6,27 +6,27 @@
 import signal
 import sys
 
-import traymenu.config
+from traymenu.config import get_config, USAGE_STR
 import traymenu.exec
 
 
 def main() -> None:
+
+    # Get command-line arguments.
     try:
-        conf = traymenu.config.get_config(sys.argv[1:])
+        conf = get_config(sys.argv[1:])
     except ValueError as e:
         print(e)
         print()
-        print("Usage: {sys.argv[0]} qt|gtk [-d|--debug]")
-        print("                 --icon <filename>")
-        print("               { --item '<label>: <command>' | --separator |")
-        print("               { --submenu <label> | --end }")
+        print(USAGE_STR.replace("traymenu", sys.argv[0], 1), end="")
         sys.exit(1)
 
-    traymenu.exec.debug = conf.debug
+    traymenu.exec.debug_output = conf.debug
 
     # Enable Ctrl-C on command line.
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
+    # Run traymenu.
     if conf.use_qt:
         from traymenu.qt import run_qt_traymenu
         run_qt_traymenu(conf)

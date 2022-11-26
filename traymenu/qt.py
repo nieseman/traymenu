@@ -18,7 +18,8 @@ import traymenu.config as config
 import traymenu.exec as exec
 
 
-def _populate_qt_menu(menu: QtWidgets.QMenu, menu_items: List[config.MenuItem]) -> None:
+def _populate_qt_menu(menu: QtWidgets.QMenu,
+                      menu_items: List[config.MenuItem]) -> None:
     """
     Populate given Qt menu object with configured menu items.
     """
@@ -30,11 +31,11 @@ def _populate_qt_menu(menu: QtWidgets.QMenu, menu_items: List[config.MenuItem]) 
 
         elif isinstance(item, config.MenuEntry):
             callback = functools.partial(exec.run_command, item.cmd)
-            qt_item = menus[-1].addAction(item.text)
+            qt_item = menus[-1].addAction(item.label)
             qt_item.triggered.connect(callback)
 
         elif isinstance(item, config.SubmenuStart):
-            qt_submenu = menus[-1].addMenu(item.text)
+            qt_submenu = menus[-1].addMenu(item.label)
             menus.append(qt_submenu)
 
         elif isinstance(item, config.SubmenuEnd):

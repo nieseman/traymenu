@@ -7,14 +7,14 @@ import subprocess
 from typing import Callable
 
 
-debug = True
+debug_output = False
 
 
 def run_command(cmd: str):
     """
     Run the given command in the background.
     """
-    if debug:
+    if debug_output:
         print(f"{datetime.datetime.now().isoformat()}  {cmd} &")
     subprocess.run(f"{cmd} &", shell=True)
 
@@ -25,7 +25,7 @@ def run_command_wrapper(cmd: str) -> Callable:
     """
 
     def _run(*unused):
-        if debug:
+        if debug_output:
             print(f"{datetime.datetime.now().isoformat()}  {cmd} &")
         subprocess.run(f"{cmd} &", shell=True)
 

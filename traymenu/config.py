@@ -7,36 +7,55 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 
+USAGE_STR = """\
+Usage:  traymenu  qt|gtk [-d|--debug] [ --icon <filename> ]
+                  { --item '<label>: <command>' | --submenu <label> |
+                    --separator | --submenu-end }
+"""
+
+
 class MenuItem(ABC):
-    """Abstract menu item"""
+    """
+    Abstract menu item
+    """
 
 
 @dataclass
 class Separator(MenuItem):
-    """A seperator in the current menu"""
+    """
+    A seperator in the current menu
+    """
 
 
 @dataclass
 class SubmenuStart(MenuItem):
-    """Begin a new submenu in the current menu"""
-    text: str
+    """
+    Begin a new submenu in the current menu
+    """
+    label: str
 
 
 @dataclass
 class SubmenuEnd(MenuItem):
-    """End the last submenu"""
+    """
+    End the last submenu
+    """
 
 
 @dataclass
 class MenuEntry(MenuItem):
-    """A menu entry for executing a command"""
-    text: str
+    """
+    A menu entry for executing a command
+    """
+    label: str
     cmd: str
 
 
 @dataclass
 class Config:
-    """Program configuration"""
+    """
+    Program configuration
+    """
     prg_name = "TrayMenu"
     debug: bool
     use_qt: bool
@@ -45,10 +64,12 @@ class Config:
 
 
 def get_config(args: List[str]) -> Config:
-    """Get program configuration from command-line arguments"""
+    """
+    Get program configuration from command-line arguments
+    """
     if not args:
         raise ValueError("No arguments")
-    if args[0] not in ("qt", "gtk"):
+    if args[0].lower() not in ("qt", "gtk"):
         raise ValueError("First argument must be 'qt' or 'gtk'")
     use_qt = (args[0] == "qt")
     debug = False
@@ -74,18 +95,18 @@ def get_config(args: List[str]) -> Config:
                 raise ValueError("Name for submenu missing")
             menu_items.append(SubmenuStart(arg))
             idx += 2
-        elif kind == "--end":
+        elif kind == "--submenu-end":
             menu_items.append(SubmenuEnd())
             idx += 1
         elif kind == "--item":
             if arg is None:
                 raise ValueError("Name for menu entry missing")
             pos = arg.find(':')
-            text, cmd = arg[:pos], arg[pos + 1:]
-            menu_items.append(MenuEntry(text.strip(), cmd.strip()))
+            label, cmd = arg[:pos], arg[pos + 1:]
+            menu_items.append(MenuEntry(label.strip(), cmd.strip()))
             idx += 2
         else:
-            raise ValueError(f"Bad menu item '{args[0]}'")
+            raise ValueError(f"Bad menu item '{kind}'")
 
     if not menu_items:
         raise ValueError("No menu items given")

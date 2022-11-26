@@ -8,16 +8,14 @@ It takes some inspiration from the "alltray" tool
 
 Screenshot in Kubuntu, using the Qt menu:
 ```
-CMD_TERM="xterm -geometry 80x30 -hold -bg black -fg green -e"
-traymenu \
-    qt --debug \
+$ CMD_TERM="xterm -geometry 80x30 -hold -bg black -fg green -e"
+$ traymenu qt --debug \
     --submenu "Test/sysinfo" \
         --item "disk free: $CMD_TERM df" \
         --separator \
         --item "mount: $CMD_TERM mount" \
-        --end \
-    --item "uptime: $CMD_TERM uptime" \
-        --end
+        --submenu-end \
+    --item "uptime: $CMD_TERM uptime"
 ```
 
 ![Screenshot](doc/traymenu_screenshot_qt.png)
@@ -26,10 +24,9 @@ traymenu \
 
 ```
 $ traymenu
-First argument must be 'qt' or 'gtk'
+No arguments
 
-Usage: {sys.argv[0]} qt|gtk [-d|--debug]
-                 --icon <filename>
-               { --item '<label>: <command>' | --separator |
-               { --submenu <label> | --end }
+Usage:  traymenu  qt|gtk [-d|--debug] [ --icon <filename> ]
+                  { --item '<label>: <command>' | --submenu <label> |
+                    --separator | --submenu-end }
 ```

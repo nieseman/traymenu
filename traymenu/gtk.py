@@ -22,7 +22,8 @@ import traymenu.config as config
 import traymenu.exec as exec
 
 
-def _populate_gtk_menu(menu: gtk.Menu, menu_items: List[config.MenuItem]) -> None:
+def _populate_gtk_menu(menu: gtk.Menu,
+                       menu_items: List[config.MenuItem]) -> None:
     """
     Populate given Gtk menu object with configured menu items.
     """
@@ -35,12 +36,12 @@ def _populate_gtk_menu(menu: gtk.Menu, menu_items: List[config.MenuItem]) -> Non
 
         elif isinstance(item, config.MenuEntry):
             callback = exec.run_command_wrapper(item.cmd)
-            gtk_item = gtk.MenuItem(label=item.text)
+            gtk_item = gtk.MenuItem(label=item.label)
             menus[-1].append(gtk_item)
             gtk_item.connect('activate', callback)
 
         elif isinstance(item, config.SubmenuStart):
-            gtk_item = gtk.MenuItem(label=item.text)
+            gtk_item = gtk.MenuItem(label=item.label)
             menus[-1].append(gtk_item)
             gtk_submenu = gtk.Menu()
             gtk_item.set_submenu(gtk_submenu)
