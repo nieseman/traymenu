@@ -4,7 +4,9 @@
 
 from abc import ABC
 from dataclasses import dataclass
-from typing import List, Optional
+import os
+import tempfile
+from typing import List, Optional, Tuple
 
 
 USAGE_STR = """\
@@ -59,7 +61,7 @@ class Config:
     prg_name = "TrayMenu"
     debug: bool
     use_qt: bool
-    icon_path: Optional[str]
+    icon_filename: Optional[str]
     menu_items: List[MenuItem]
 
 
@@ -73,7 +75,7 @@ def get_config(args: List[str]) -> Config:
         raise ValueError("First argument must be 'qt' or 'gtk'")
     use_qt = (args[0] == "qt")
     debug = False
-    icon_path = None
+    icon_filename = None
 
     idx = 1
     menu_items = []
@@ -85,7 +87,7 @@ def get_config(args: List[str]) -> Config:
         elif kind == "--icon":
             if arg is None:
                 raise ValueError("Filename for icon missing")
-            icon_path = arg
+            icon_filename = arg
             idx += 2
         elif kind == "--separator":
             menu_items.append(Separator())
@@ -111,4 +113,31 @@ def get_config(args: List[str]) -> Config:
     if not menu_items:
         raise ValueError("No menu items given")
 
-    return Config(debug, use_qt, icon_path, menu_items)
+    return Config(debug, use_qt, icon_filename, menu_items)
+
+
+#
+# Default icon
+#
+
+DEFAULT_SVG_ICON = """\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <polyline points="25,25 75,25 25,75 25,25" stroke="rgb(255,255,255)" stroke-width="5" stroke-linejoin="round" fill="none"/>
+  <polyline points="33,47 47,33"             stroke="rgb(255,255,255)" stroke-width="5" stroke-linejoin="round" fill="none"/>
+  <polyline points="45,75 75,45 75,75 45,75" stroke="rgb(255,255,255)" stroke-width="5" stroke-linejoin="round" fill="none"/>
+</svg>
+"""
+
+
+def get_icon_file(filename: Optional[str]) -> Tuple[bool, str]:
+    """
+    If given filename is None, Write the default SVG icon to a new file
+    (which is intended to be temporary).
+    """
+    if filename is None:
+        fh, tmp_filename = tempfile.mkstemp(suffix='.svg', text=True)
+        with os.fdopen(fh, 'w') as fh:
+            print(DEFAULT_SVG_ICON, file=fh)
+        return True, tmp_filename
+    else:
+        return False, filename

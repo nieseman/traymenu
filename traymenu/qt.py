@@ -3,7 +3,7 @@
 # qt.py: Qt-based system tray menu
 
 import functools
-import os.path
+import os
 import sys
 from typing import List
 
@@ -60,12 +60,21 @@ def run_qt_traymenu(conf: config.Config) -> None:
     quit_item = menu.addAction('Quit')
     quit_item.triggered.connect(app.quit)
 
+    # Load icon file.
+    is_tmp_icon_file, icon_filename = config.get_icon_file(conf.icon_filename)
+    qicon = QtGui.QIcon(icon_filename)
+
+    # Work-around: SVG icon is not shown; use a pixmap instead; see:
+    # https://bugreports.qt.io/browse/PYSIDE-1493
+    qicon = QtGui.QIcon(qicon.pixmap(32))
+
     # Setup tray icon.
     tray_icon = QtWidgets.QSystemTrayIcon()
     tray_icon.setContextMenu(menu)
-    if conf.icon_path is not None:
-        tray_icon.setIcon(QtGui.QIcon(os.path.abspath(conf.icon_path)))
-    tray_icon.setIcon(QtGui.QIcon.fromTheme("system-help"))  # TBD: place-holder
+    tray_icon.setIcon(qicon)
     tray_icon.show()
 
+    # Run!
+    if is_tmp_icon_file:
+        os.remove(icon_filename)
     app.exec_()

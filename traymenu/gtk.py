@@ -68,13 +68,19 @@ def run_gtk_traymenu(conf: config.Config) -> None:
     tray_menu.append(gtk.SeparatorMenuItem())
     tray_menu.append(gtk_item)
 
+    # Determine tray icon.
+    is_tmp_icon_file, icon_filename = config.get_icon_file(conf.icon_filename)
+
     # Setup tray icon.
     indicator = appindicator.Indicator.new(
         conf.prg_name,
-        os.path.abspath(conf.icon_path),    # TBD: if icon_path is not None?
+        icon_filename,
         appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_menu(tray_menu)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     indicator.get_menu().show_all()
 
+    # Run!
+    if is_tmp_icon_file:
+        os.remove(icon_filename)
     gtk.main()
