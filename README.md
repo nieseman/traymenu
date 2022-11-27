@@ -1,4 +1,5 @@
 # traymenu
+<image align="right" width="100" src="doc/traymenu.png">
 A Gtk/Qt-based menu for the system tray to execute arbitrary commands.
 
 It takes some inspiration from the "alltray" tool
