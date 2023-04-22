@@ -18,6 +18,21 @@ import traymenu.config as config
 import traymenu.exec as exec
 
 
+class TrayIcon(QtWidgets.QSystemTrayIcon):
+    """
+    Tray icon, which performs 'open context menu' action on both left click and
+    right click.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.activated.connect(self.showMenuOnTrigger)
+
+    def showMenuOnTrigger(self, reason):
+        if reason == QtWidgets.QSystemTrayIcon.Trigger:
+            self.contextMenu().popup(QtGui.QCursor.pos())
+
+
 def _populate_qt_menu(menu: QtWidgets.QMenu,
                       menu_items: List[config.MenuItem]) -> None:
     """
@@ -69,7 +84,7 @@ def run_qt_traymenu(conf: config.Config) -> None:
     qicon = QtGui.QIcon(qicon.pixmap(32))
 
     # Setup tray icon.
-    tray_icon = QtWidgets.QSystemTrayIcon()
+    tray_icon = TrayIcon()
     tray_icon.setContextMenu(menu)
     tray_icon.setIcon(qicon)
     tray_icon.show()
