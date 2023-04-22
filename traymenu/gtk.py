@@ -27,29 +27,29 @@ def _populate_gtk_menu(menu: gtk.Menu,
     """
     Populate given Gtk menu object with configured menu items.
     """
-    menus = [menu]
+    submenu_stack = [menu]
 
     for item in menu_items:
         if isinstance(item, config.Separator):
             gtk_item = gtk.SeparatorMenuItem()
-            menus[-1].append(gtk_item)
+            submenu_stack[-1].append(gtk_item)
 
         elif isinstance(item, config.MenuEntry):
             callback = exec.run_command_wrapper(item.cmd)
             gtk_item = gtk.MenuItem(label=item.label)
-            menus[-1].append(gtk_item)
+            submenu_stack[-1].append(gtk_item)
             gtk_item.connect('activate', callback)
 
         elif isinstance(item, config.SubmenuStart):
             gtk_item = gtk.MenuItem(label=item.label)
-            menus[-1].append(gtk_item)
+            submenu_stack[-1].append(gtk_item)
             gtk_submenu = gtk.Menu()
             gtk_item.set_submenu(gtk_submenu)
-            menus.append(gtk_submenu)
+            submenu_stack.append(gtk_submenu)
 
         elif isinstance(item, config.SubmenuEnd):
-            if len(menus) > 1:
-                menus.pop()
+            if len(submenu_stack) > 1:
+                submenu_stack.pop()
 
         else:
             assert False, f"Wrong menu item type: {type(item)}"

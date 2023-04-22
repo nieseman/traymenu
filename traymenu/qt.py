@@ -38,24 +38,24 @@ def _populate_qt_menu(menu: QtWidgets.QMenu,
     """
     Populate given Qt menu object with configured menu items.
     """
-    menus = [menu]
+    submenu_stack = [menu]
 
     for item in menu_items:
         if isinstance(item, config.Separator):
-            menus[-1].addSeparator()
+            submenu_stack[-1].addSeparator()
 
         elif isinstance(item, config.MenuEntry):
             callback = functools.partial(exec.run_command, item.cmd)
-            qt_item = menus[-1].addAction(item.label)
+            qt_item = submenu_stack[-1].addAction(item.label)
             qt_item.triggered.connect(callback)
 
         elif isinstance(item, config.SubmenuStart):
-            qt_submenu = menus[-1].addMenu(item.label)
-            menus.append(qt_submenu)
+            qt_submenu = submenu_stack[-1].addMenu(item.label)
+            submenu_stack.append(qt_submenu)
 
         elif isinstance(item, config.SubmenuEnd):
-            if len(menus) > 1:
-                menus.pop()
+            if len(submenu_stack) > 1:
+                submenu_stack.pop()
 
         else:
             assert False, f"Wrong menu item type: {type(item)}"
