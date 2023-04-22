@@ -1,6 +1,8 @@
 #!/bin/bash
 
 CMD_TERM="xterm -geometry 80x30 -hold -bg black -fg green -e"
+
+# Passing menu items via command line.
 traymenu qt --debug \
     --submenu "Test/sysinfo" \
         --item "disk free: $CMD_TERM df" \
@@ -8,3 +10,13 @@ traymenu qt --debug \
         --item "mount: $CMD_TERM mount" \
         --submenu-end \
     --item "uptime: $CMD_TERM uptime"
+
+# Passing menu items via stdin.
+cat <<MENU_DEF | traymenu qt --debug --stdin
+--submenu "Test/sysinfo"
+    --item "disk free: $CMD_TERM df"
+    --separator
+    --item "mount: $CMD_TERM mount"
+    --submenu-end
+--item "uptime: $CMD_TERM uptime"
+MENU_DEF

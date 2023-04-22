@@ -6,7 +6,8 @@
 import signal
 import sys
 
-from traymenu.config import get_config, USAGE_STR
+from traymenu.config import eval_cmdline_args, \
+                            get_menu_items_from_file, USAGE_STR
 import traymenu.exec
 
 
@@ -14,7 +15,11 @@ def main() -> None:
 
     # Get command-line arguments.
     try:
-        conf = get_config(sys.argv[1:])
+        conf = eval_cmdline_args(sys.argv[1:])
+        if conf.read_menu_items_from_stdin:
+            conf.menu_items = get_menu_items_from_file(sys.stdin)
+        if not conf.menu_items:
+            raise ValueError("No menu items given")
     except ValueError as e:
         print(e)
         print()
