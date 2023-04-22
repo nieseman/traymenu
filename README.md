@@ -28,6 +28,6 @@ $ traymenu
 No arguments
 
 Usage:  traymenu  qt|gtk [-d|--debug] [ --icon <filename> ]
-                  { --item '<label>: <command>' | --submenu <label> |
-                    --separator | --submenu-end }
+                  ( --stdin | { --item '<label>: <command>' | --submenu <label> |
+                                --separator | --submenu-end } )
 ```
