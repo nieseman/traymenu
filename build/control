@@ -1,0 +1,6 @@
+Package: traymenu
+Version: $VERSION
+Architecture: all
+Maintainer: Manfred Niesert <nieseman@niesert.net>
+Homepage: https://github.com/nieseman/traymenu
+Description: A Gtk/Qt-based menu for the system tray to execute arbitrary commands.
