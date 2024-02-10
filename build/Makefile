@@ -1,5 +1,7 @@
 VERSION_AND_REVISION = $(shell git describe --tags --dirty | sed -e 's/^v//')
 PKG_ID = traymenu_${VERSION_AND_REVISION}_all
+PYMOD_VERSION = $(shell PYTHONPATH=../src:$$PYTHONPATH python3 -c \
+                        'import traymenu; print(traymenu.__version__)')
 
 BUILD_DIR = ./build_dir
 BASE_DIR = ${BUILD_DIR}/${PKG_ID}
@@ -28,6 +30,11 @@ copy_files:
 	cp ../src/traymenu/*.py ${LIB_DIR}
 	cp ../doc/traymenu.svg ${ICON_DIR}
 	chmod -R g-w ${BASE_DIR}
+
+.PHONY: show_version
+show_version:
+	@echo "Traymenu version according to git: '${VERSION_AND_REVISION}'"
+	@echo "Traymenu version according to Python: '${PYMOD_VERSION}'"
 
 .PHONY: clean
 clean:

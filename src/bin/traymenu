@@ -4,6 +4,7 @@
 A Gtk- or Qt-based menu for the system tray to execute arbitrary commands.
 """
 
+import os.path
 import signal
 import sys
 import tempfile
@@ -35,7 +36,9 @@ def get_config() -> traymenu.Config:
         return config
 
     except ValueError as e:
-        usage_str = traymenu.USAGE_STR.replace("traymenu", sys.argv[0], 1)
+        usage_str = (traymenu.USAGE_STR.
+                     replace("traymenu", os.path.basename(sys.argv[0]), 1).
+                     replace("<VERSION>", traymenu.__version__))
         print(f"Error: {e}")
         print()
         print(usage_str, end="")

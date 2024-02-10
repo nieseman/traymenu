@@ -17,6 +17,7 @@ Usage:  traymenu  qt|gtk [-d|--debug] [ --icon <filename> ]
                                 --submenu <label> |
                                 --separator |
                                 --submenu-end } )
+Program version: <VERSION>
 """
 
 
