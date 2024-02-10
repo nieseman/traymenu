@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-#
-# qt.py: Qt-based system tray menu
+
+"""
+Qt-based system tray menu.
+"""
 
 import functools
 import os
@@ -14,8 +16,7 @@ except Exception as e:
     print("For instance, on Ubuntu: apt install python3-pyqt5")
     sys.exit(1)
 
-import traymenu.config as config
-import traymenu.exec as exec
+import traymenu
 
 
 class TrayIcon(QtWidgets.QSystemTrayIcon):
@@ -34,26 +35,26 @@ class TrayIcon(QtWidgets.QSystemTrayIcon):
 
 
 def _populate_qt_menu(menu: QtWidgets.QMenu,
-                      menu_items: List[config.MenuItem]) -> None:
+                      menu_items: List[traymenu.MenuItem]) -> None:
     """
     Populate given Qt menu object with configured menu items.
     """
     submenu_stack = [menu]
 
     for item in menu_items:
-        if isinstance(item, config.Separator):
+        if isinstance(item, traymenu.Separator):
             submenu_stack[-1].addSeparator()
 
-        elif isinstance(item, config.MenuEntry):
-            callback = functools.partial(exec.run_command, item.cmd)
+        elif isinstance(item, traymenu.MenuEntry):
+            callback = functools.partial(traymenu.run_command, item.cmd)
             qt_item = submenu_stack[-1].addAction(item.label)
             qt_item.triggered.connect(callback)
 
-        elif isinstance(item, config.SubmenuStart):
+        elif isinstance(item, traymenu.SubmenuStart):
             qt_submenu = submenu_stack[-1].addMenu(item.label)
             submenu_stack.append(qt_submenu)
 
-        elif isinstance(item, config.SubmenuEnd):
+        elif isinstance(item, traymenu.SubmenuEnd):
             if len(submenu_stack) > 1:
                 submenu_stack.pop()
 
@@ -61,7 +62,7 @@ def _populate_qt_menu(menu: QtWidgets.QMenu,
             assert False, f"Wrong menu item type: {type(item)}"
 
 
-def run_qt_traymenu(conf: config.Config) -> None:
+def run_qt_traymenu(conf: traymenu.Config) -> None:
     """
     Create and run the Qt-based system tray menu.
     """
@@ -76,12 +77,10 @@ def run_qt_traymenu(conf: config.Config) -> None:
     quit_item.triggered.connect(app.quit)
 
     # Load icon file.
-    is_tmp_icon_file, icon_filename = config.get_icon_file(conf.icon_filename)
-    qicon = QtGui.QIcon(icon_filename)
-
     # Work-around: SVG icon is not shown; use a pixmap instead; see:
     # https://bugreports.qt.io/browse/PYSIDE-1493
-    qicon = QtGui.QIcon(qicon.pixmap(32))
+    qicon = QtGui.QIcon(conf.icon_filename)
+    qicon = QtGui.QIcon(qicon.pixmap(48))
 
     # Setup tray icon.
     tray_icon = TrayIcon()
@@ -90,6 +89,4 @@ def run_qt_traymenu(conf: config.Config) -> None:
     tray_icon.show()
 
     # Run!
-    if is_tmp_icon_file:
-        os.remove(icon_filename)
     app.exec_()

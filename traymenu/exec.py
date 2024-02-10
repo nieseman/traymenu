@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-#
-# exec.py: execute arbitrary commands
+
+"""
+Execute arbitrary commands.
+"""
 
 import datetime
 import subprocess
